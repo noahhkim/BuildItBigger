@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.JokeSource;
 import com.example.android.jokedisplay.JokeActivity;
 import com.example.noah.myapplication.backend.myApi.MyApi;
+import com.example.noah.myapplication.backend.myApi.model.MyBean;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+//      new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+        new EndpointsAsyncTask(this).execute();
+
     }
 
 
@@ -53,18 +56,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view) {
+    public void startJokeActivity(View view) {
         Intent intent = new Intent(this, JokeActivity.class);
         JokeSource jokeSource = new JokeSource();
         String lameJoke = jokeSource.tellAJoke();
         intent.putExtra(JokeActivity.JOKE_KEY, lameJoke);
         startActivity(intent);
-//        Toast.makeText(this, lameJoke, Toast.LENGTH_SHORT).show();
     }
 
     class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-        private MyApi myApiService;
-        private Context context;
+        private MyApi myApiService = null;
+        private Context mContext;
+
+        public EndpointsAsyncTask(Context context) {
+            mContext = context;
+        }
 
 
         @Override
@@ -77,11 +83,18 @@ public class MainActivity extends AppCompatActivity {
                 // end options for devappserver
                 myApiService = builder.build();
             }
-            context = params[0].first;
-            String name = params[0].second;
+
+//            mContext = params[0].first;
+//            String name = params[0].second;
+//
+//            try {
+//                return myApiService.sayHi(name).execute().getData();
+//            } catch (IOException e) {
+//                return e.getMessage();
+//            }
 
             try {
-                return myApiService.sayHi(name).execute().getData();
+                return myApiService.tellJoke(new MyBean()).execute().getJoke();
             } catch (IOException e) {
                 return e.getMessage();
             }
@@ -89,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            super.onPostExecute(result);
+            Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
         }
     }
 }
