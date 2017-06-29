@@ -43,45 +43,4 @@ public class MainActivity extends AppCompatActivity {
         EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this);
         endpointsAsyncTask.execute();
     }
-
-//    class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
-//        private MyApi myApiService = null;
-//        private Context mContext;
-//        private String mResult;
-//
-//        public EndpointsAsyncTask(Context context) {
-//            mContext = context;
-//        }
-//
-//
-//        @Override
-//        protected String doInBackground(String... params) {
-//            if (myApiService == null) {
-//                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-//                        new AndroidJsonFactory(), null)
-//                        .setRootUrl("https://builditbigger-172105.appspot.com/_ah/api/");
-//                myApiService = builder.build();
-//            }
-//
-//            try {
-//                return myApiService.tellJoke(new MyBean()).execute().getJoke();
-//            } catch (IOException e) {
-//                return e.getMessage();
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String result) {
-//            super.onPostExecute(result);
-//            mResult = result;
-//            sendJokeToJokeActivity();
-//        }
-//
-//        private void sendJokeToJokeActivity() {
-//            Intent intent = new Intent(mContext, JokeActivity.class);
-//            intent.putExtra(JokeActivity.JOKE_KEY, mResult);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            mContext.startActivity(intent);
-//        }
-//    }
 }
