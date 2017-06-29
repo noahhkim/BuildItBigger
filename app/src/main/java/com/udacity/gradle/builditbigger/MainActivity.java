@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.JokeSource;
 import com.example.android.jokedisplay.JokeActivity;
 import com.example.noah.myapplication.backend.myApi.MyApi;
 import com.example.noah.myapplication.backend.myApi.model.MyBean;
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 //      new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
-        new EndpointsAsyncTask(this).execute();
 
     }
 
@@ -57,16 +53,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startJokeActivity(View view) {
-        Intent intent = new Intent(this, JokeActivity.class);
-        JokeSource jokeSource = new JokeSource();
-        String lameJoke = jokeSource.tellAJoke();
-        intent.putExtra(JokeActivity.JOKE_KEY, lameJoke);
-        startActivity(intent);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this);
+        endpointsAsyncTask.execute();
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
         private MyApi myApiService = null;
         private Context mContext;
+        private String mResult;
 
         public EndpointsAsyncTask(Context context) {
             mContext = context;
@@ -74,24 +68,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         @Override
-        protected String doInBackground(Pair<Context, String>... params) {
+        protected String doInBackground(String... params) {
             if (myApiService == null) {
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
-                        .setRootUrl("https://builditbigger-172105.appspot.com//_ah/api/");
-
-                // end options for devappserver
+                        .setRootUrl("https://builditbigger-172105.appspot.com/_ah/api/");
                 myApiService = builder.build();
             }
-
-//            mContext = params[0].first;
-//            String name = params[0].second;
-//
-//            try {
-//                return myApiService.sayHi(name).execute().getData();
-//            } catch (IOException e) {
-//                return e.getMessage();
-//            }
 
             try {
                 return myApiService.tellJoke(new MyBean()).execute().getJoke();
@@ -103,7 +86,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(mContext, result, Toast.LENGTH_LONG).show();
+            mResult = result;
+            sendJokeToJokeActivity();
+        }
+
+        private void sendJokeToJokeActivity() {
+            Intent intent = new Intent(mContext, JokeActivity.class);
+            intent.putExtra(JokeActivity.JOKE_KEY, mResult);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
         }
     }
 }
