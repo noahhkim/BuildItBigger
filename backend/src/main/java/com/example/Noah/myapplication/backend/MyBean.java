@@ -17,11 +17,4 @@ public class MyBean {
         return jokeSource.tellAJoke();
     }
 
-//    public String getData() {
-//        return myData;
-//    }
-//
-//    public void setData(String data) {
-//        myData = data;
-//    }
 }
