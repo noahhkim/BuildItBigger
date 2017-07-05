@@ -3,6 +3,8 @@ package com.udacity.gradle.builditbigger;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.android.jokedisplay.JokeActivity;
 import com.example.noah.myapplication.backend.myApi.MyApi;
@@ -20,9 +22,11 @@ public class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
     private MyApi myApiService = null;
     private Context mContext;
     private String mResult;
+    private ProgressBar mProgressBar;
 
-    public EndpointsAsyncTask(Context context) {
+    public EndpointsAsyncTask(Context context, ProgressBar progressBar) {
         mContext = context;
+        mProgressBar = progressBar;
     }
 
     @Override
@@ -42,9 +46,20 @@ public class EndpointsAsyncTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         mResult = result;
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.GONE);
+        }
         sendJokeToJokeActivity();
     }
 

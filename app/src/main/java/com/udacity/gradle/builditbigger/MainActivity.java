@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+
+import com.udacity.gradle.builditbigger.paid.MainActivityFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -13,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.fragment, new MainActivityFragment()).commit();
 
     }
 
@@ -40,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startJokeActivity(View view) {
-        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this, progressBar);
         endpointsAsyncTask.execute();
     }
 }
