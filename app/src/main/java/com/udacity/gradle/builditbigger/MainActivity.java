@@ -7,8 +7,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.udacity.gradle.builditbigger.paid.MainActivityFragment;
-
 
 public class MainActivity extends AppCompatActivity {
 
