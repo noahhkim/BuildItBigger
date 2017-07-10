@@ -40,13 +40,11 @@ public class AsyncTaskTest {
     }
     @Test
     public void nonEmptyStringTest() {
-        Timber.d("AsyncTaskTest");
         String joke = null;
         EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(mContext, null);
         endpointsAsyncTask.execute();
         try {
             joke = endpointsAsyncTask.get();
-            Timber.d("Retrieved joke: " + joke);
         } catch (Exception e) {
             e.printStackTrace();
         }
